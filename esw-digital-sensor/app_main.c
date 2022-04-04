@@ -98,6 +98,7 @@ static void mma_data_ready_loop (void *args)
     i2c_init();
     i2c_enable();
     
+    sensor_reset(); //Vb aitab
     // To configure sensor put sensor in standby mode.
     set_sensor_standby();
     

@@ -13,8 +13,8 @@
 #include "cmsis_os2.h"
 #include "i2c_handler.h" // Include I2C SDA and SCL port and pins
 
-#define GPIO_IF_EXTI_NUM 1  // TODO Replace with actual IF number
-
+#define GPIO_IF_EXTI_NUM 2  // TODO Replace with actual IF number
+#define GPIO_EXTI_NUM 1
 
 #define MMA8653FC_SDA_PORT      gpioPortA
 #define MMA8653FC_SCL_PORT      gpioPortA

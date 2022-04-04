@@ -252,6 +252,28 @@ static void read_multiple_registries(uint8_t startRegAddr, uint8_t *rxBuf, uint1
     // TODO Configure I2C_TransferSeq_TypeDef 
     
     // TODO Do I2C transaction
+    
+    uint8_t reg;
+    I2C_TransferSeq_TypeDef *ret, seq;
+    static uint8_t tx_buf[7], rx_buf[7];
+    
+    // Configure I2C_TransferSeq_TypeDef
+    seq.addr = MMA8653FC_SLAVE_ADDRESS_READ;
+    tx_buf[0] = startRegAddr;
+    seq.buf[0].data = tx_buf;
+    seq.buf[0].len = 7;
+    
+    rx_buf[0] = 0;
+    seq.buf[1].data = rx_buf;
+    seq.buf[1].len = rxBufLen;
+    seq.flags = I2C_FLAG_WRITE_READ;    
+    
+    // Read a value from MMA8653FC registry
+    ret = i2c_transaction(&seq);
+    //reg = ret->buf[1].data[0];
+    
+    info1("Read multiple - %u", reg);
+
 
     return ;
 }

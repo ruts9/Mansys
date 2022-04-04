@@ -53,11 +53,11 @@ void gpio_external_interrupt_init (void)
     CMU_ClockEnable(cmuClock_GPIO, true);
 
     // TODO Configure pin
-    GPIO_PinModeSet(gpioPortA, 1, gpioModeWiredAndPullUpFilter, 0);
+    GPIO_PinModeSet(gpioPortA, 1, gpioModeInputPullFilter, 1);
     
     // TODO Configure external interrupts
-      GPIO_ExtIntConfig(gpioPortA, 1, GPIO_IF_EXTI_NUM, true, true, false); // Port, pin, EXTI number, rising edge, falling edge, enabled.
-      
+    GPIO_ExtIntConfig(gpioPortA, 1, GPIO_EXTI_NUM, false, true, false); // Port, pin, EXTI number, rising edge, falling edge, enabled.
+      GPIO_InputSenseSet(GPIO_INSENSE_INT, GPIO_INSENSE_INT);
       info1(" External interrupt init ");
 }
 
@@ -68,7 +68,7 @@ void gpio_external_interrupt_disable ()
 }
 
 /**
- * @brief Enable exteranl interrupts on GPIO pins.
+ * @brief Enable external interrupts on GPIO pins.
  *
  * @param   tID, ID of the thread that handles the interrupt (deferred interrupt handling)
  * @param   tFlag, flag id for thread tID
@@ -95,11 +95,18 @@ void gpio_external_interrupt_enable (osThreadId_t tID, uint32_t tFlag)
 
 void GPIO_ODD_IRQHandler (void)
 {
-    info1("Interrupt");
+  
     // TODO Get pending interrupts
     uint32_t iflags;
     iflags = GPIO_IntGetEnabled();
+    PLATFORM_LedsSet(PLATFORM_LedsGet()^2);
     
-    // TODO Clear interrupt
-    GPIO_IntClear(iflags);
+    if (iflags & GPIO_IF_EXTI_NUM)
+    {
+        // Clear interrupt flag.
+        GPIO_IntClear(GPIO_IF_EXTI_NUM);
+
+        osThreadFlagsSet(resumeThreadID, resumeThreadFlagID);
+    }
+    else ;
 }
